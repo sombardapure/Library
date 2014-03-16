@@ -100,4 +100,12 @@ public class LibraryServiceTest {
 		assertFalse(actualResult);
 	}
 	
+	@Test
+	public void issueBookForInvalidMember(){
+		Member borrower = null;
+		Set<Book> booksTobeIssued = null;
+		Set<Book> actualResults = libraryService.issueBooks(borrower, booksTobeIssued);
+		assertEquals(null, actualResults);
+	}
+	
 }

@@ -93,6 +93,25 @@ public class LibraryService {
 		}
 		return dataStore.getUserData().add(member);
 	}
+	
+	/**
+	 * 
+	 * Method to issue books
+	 * 
+	 * @param borrower - Borrower details
+	 * @param booksTobeIssued - list of books to be issued
+	 * @return Set<Book> - list of issued books
+	 * @throws BusinessException
+	 */
+	public Set<Book> issueBooks(Member borrower, Set<Book> booksTobeIssued){
+		logger.info("Executing issueBooks");
+		if(null == borrower || null == booksTobeIssued){
+			logger.debug("Borrower or Books are null/invalid");
+			return null;
+		}
+		Set<Book> books = dataStore.getBooks(booksTobeIssued);
+		return books;
+	}
 
 	
 }
