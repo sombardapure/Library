@@ -1,11 +1,13 @@
 package com.library.service;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
 
 import com.library.bean.Book;
 import com.library.bean.Member;
+import com.library.data.DataStore;
 
 /**
  * Service class which has all the methods required by library
@@ -15,7 +17,7 @@ import com.library.bean.Member;
 public class LibraryService {
 
 	private static final Logger logger = Logger.getLogger(LibraryService.class);
-	
+	private static final DataStore dataStore =DataStore.getInstance();
 	private static final LibraryService service = new LibraryService();
 
 	private LibraryService(){
@@ -33,7 +35,20 @@ public class LibraryService {
 	 */
 	public Set<Book> findBooksByAuthor(String author){
 		logger.info("Executing findBooksByAuthor");
-		return null;
+		Set<Book> resultSet = new HashSet<Book>();
+		if(null == author || author.isEmpty()){
+			if(logger.isDebugEnabled()){
+				logger.debug("author is null or empty");
+			}
+			return resultSet;
+		}
+		Set<Book> bookStore = dataStore.getBookStore();
+		for(Book book : bookStore){
+			if(book.getAuthor().toLowerCase().contains(author.toLowerCase())){
+				resultSet.add(book);
+			}
+		}
+		return resultSet;
 	}
 
 	public Set<Book> findBooksByTitle(String title){
