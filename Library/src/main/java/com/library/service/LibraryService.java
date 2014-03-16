@@ -8,6 +8,7 @@ import org.apache.log4j.Logger;
 import com.library.bean.Book;
 import com.library.bean.Member;
 import com.library.data.DataStore;
+import com.library.exception.BusinessException;
 
 /**
  * Service class which has all the methods required by library
@@ -103,7 +104,7 @@ public class LibraryService {
 	 * @return Set<Book> - list of issued books
 	 * @throws BusinessException
 	 */
-	public Set<Book> issueBooks(Member borrower, Set<Book> booksTobeIssued){
+	public Set<Book> issueBooks(Member borrower, Set<Book> booksTobeIssued) throws BusinessException{
 		logger.info("Executing issueBooks");
 		if(null == borrower || null == booksTobeIssued){
 			logger.debug("Borrower or Books are null/invalid");
