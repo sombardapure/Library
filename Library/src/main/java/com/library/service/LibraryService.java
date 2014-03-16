@@ -130,6 +130,23 @@ public class LibraryService {
 		return books;
 	}
 
+	/**
+	 * Method to return books
+	 * 
+	 * @param member
+	 *            - member details who is returning books
+	 * @param returnedBooks
+	 *            - list of books to be returned
+	 * @return Set<Book> - list of overdue books
+	 */
+	public Set<Book> returnBooks(Member member, Set<Book> returnedBooks) {
+		logger.info("Executing returnBooks");
+		if (null == member || null == returnedBooks) {
+			logger.debug("Borrower or returned books are null/invalid");
+			return null;
+		}
+		return null;
+	}
 	
 	/**
 	 * Method to validate that books can be borrowed
