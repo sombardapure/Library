@@ -62,4 +62,19 @@ public class LibraryServiceTest {
 		assertEquals(null, actualResult);
 	}
 	
+	@Test
+	public void findBooksByTitle(){
+		Set<Book> actualResult = libraryService.findBooksByTitle("Java");
+		
+		Set<Book> expectedResult = new HashSet<Book>();
+		expectedResult.add(new Book(1L, "Kathy Sierra", "Head First Java", BookType.BORROWABLE));
+		expectedResult.add(new Book(6L, "Kathy Sierra", "Head First Java", BookType.BORROWABLE));
+		expectedResult.add(new Book(4L, "Joshua Bloch","Effective Java", BookType.REFERENCE));
+		expectedResult.add(new Book(5L, "Bruce Tate","Bitter Java", BookType.REFERENCE));
+		expectedResult.add(new Book(2L, "Bruce Ecke","Thinking In Java", BookType.BORROWABLE));
+		
+		assertNotNull(actualResult);
+		assertArrayEquals(actualResult.toArray(), expectedResult.toArray());
+	}
+	
 }
