@@ -15,6 +15,7 @@ import org.junit.Test;
 
 import com.library.bean.Book;
 import com.library.bean.Member;
+import com.library.data.DataStore;
 import com.library.enums.BookType;
 import com.library.exception.BusinessException;
 import com.library.exception.ExceptionMessages;
@@ -28,10 +29,12 @@ import com.library.service.LibraryService;
 public class LibraryServiceTest {
 
 	private static LibraryService libraryService;
+	private static DataStore dataStore;
 
 	@BeforeClass
 	public static void setUp(){
 		libraryService = LibraryService.getInstance();
+		dataStore =DataStore.getInstance();
 	}
 	@Test
 	public void findBooksByAuthorAsNull(){
@@ -145,7 +148,21 @@ public class LibraryServiceTest {
 		}catch(BusinessException exception){
 			assertEquals(ExceptionMessages.MAX_NO_OF_BOOKS, exception.getMessage());
 		}
+	}
+	
+	@Test
+	public void issueTwoBooks() throws Exception{
+		Member borrower = new Member(1L, "");
 		
+		Set<Book> booksTobeIssued = new HashSet<Book>();
+		booksTobeIssued.add(new Book(1L, "Kathy Sierra", "Head First Java", BookType.BORROWABLE));
+		booksTobeIssued.add(new Book(2L, "Joshua Bloch","Effective Java", BookType.BORROWABLE));
+		
+		Set<Book> actualResult = libraryService.issueBooks(borrower, booksTobeIssued);
+		assertNotNull(actualResult);
+		
+		Member borrowerInDB = (Member)dataStore.getMember(borrower);
+		assertEquals(2, borrowerInDB.getBorrowedBooks().size());
 	}
 	
 }
