@@ -3,6 +3,7 @@ package com.library;
 import static junit.framework.Assert.assertEquals;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -11,6 +12,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.library.bean.Book;
+import com.library.bean.Member;
 import com.library.enums.BookType;
 import com.library.service.LibraryService;
 
@@ -75,6 +77,13 @@ public class LibraryServiceTest {
 		
 		assertNotNull(actualResult);
 		assertArrayEquals(actualResult.toArray(), expectedResult.toArray());
+	}
+	
+	@Test
+	public void addMember(){
+		Member member = new Member(7L, "TestUser7");
+		boolean actualResult = libraryService.addMember(member);
+		assertTrue(actualResult);
 	}
 	
 }
