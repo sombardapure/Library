@@ -52,9 +52,29 @@ public class LibraryService {
 		return resultSet;
 	}
 
+	/**
+	 * Method to search books by title
+	 * 
+	 * @param title - title of the book
+	 * @return Set<Book> - search result
+	 */
 	public Set<Book> findBooksByTitle(String title){
 		logger.info("Executing findBooksByTitle");
-		return null;
+		Set<Book> resultSet = null;
+		if(null == title || title.isEmpty()){
+			if(logger.isDebugEnabled()){
+				logger.debug("title is null or empty");
+			}
+			return resultSet;
+		}
+		resultSet = new HashSet<Book>();
+		Set<Book> bookStore = dataStore.getBookStore();
+		for(Book book : bookStore){
+			if(book.getTitle().toLowerCase().contains(title.toLowerCase())){
+				resultSet.add(book);
+			}
+		}
+		return resultSet;
 	}
 
 	public boolean addMember(Member member){
