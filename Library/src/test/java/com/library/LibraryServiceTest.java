@@ -7,6 +7,8 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -170,6 +172,26 @@ public class LibraryServiceTest {
 		Set<Book> booksTobeReturned = null;
 		Set<Book> actualResults = libraryService.returnBooks(member, booksTobeReturned);
 		assertEquals(null, actualResults);
+	}
+	
+	@Test
+	public void returnOverDueBooks(){
+		Member member = new Member(1L, "");
+		
+		Long prevDay =  8L * 24 * 60 * 60 * 1000;
+		Calendar calendar = Calendar.getInstance();
+		Date borrowedOn = new Date(calendar.getTime().getTime() - prevDay);
+		
+		Set<Book> booksTobeReturned = new HashSet<Book>();
+		Book borrowedBook = new Book(1L, "Kathy Sierra", "Head First Java", BookType.BORROWABLE);
+		borrowedBook.setBorrowedOn(borrowedOn); 
+		booksTobeReturned.add(borrowedBook);
+		
+		borrowedBook = new Book(2L, "Joshua Bloch","Effective Java", BookType.BORROWABLE);
+		booksTobeReturned.add(borrowedBook);
+	
+		Set<Book>  overDueBooks = libraryService.returnBooks(member, booksTobeReturned);
+		assertEquals(1, overDueBooks.size());
 	}
 	
 }
