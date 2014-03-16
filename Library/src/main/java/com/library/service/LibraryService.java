@@ -35,13 +35,14 @@ public class LibraryService {
 	 */
 	public Set<Book> findBooksByAuthor(String author){
 		logger.info("Executing findBooksByAuthor");
-		Set<Book> resultSet = new HashSet<Book>();
+		Set<Book> resultSet = null;
 		if(null == author || author.isEmpty()){
 			if(logger.isDebugEnabled()){
 				logger.debug("author is null or empty");
 			}
 			return resultSet;
 		}
+		resultSet = new HashSet<Book>();
 		Set<Book> bookStore = dataStore.getBookStore();
 		for(Book book : bookStore){
 			if(book.getAuthor().toLowerCase().contains(author.toLowerCase())){
