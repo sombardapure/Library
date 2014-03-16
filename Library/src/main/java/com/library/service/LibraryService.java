@@ -77,9 +77,21 @@ public class LibraryService {
 		return resultSet;
 	}
 
+	/**
+	 * Method to join member in library
+	 * 
+	 * @param member - member details
+	 * @return true if member is added otherwise false
+	 */
 	public boolean addMember(Member member){
 		logger.info("Executing add member");
-		return false;
+		if(null == member){
+			if(logger.isDebugEnabled()){
+				logger.debug("Member is null/invalid and could not be added to store");
+			}
+			return false;
+		}
+		return dataStore.getUserData().add(member);
 	}
 
 	
