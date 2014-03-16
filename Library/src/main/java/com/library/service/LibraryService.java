@@ -9,6 +9,7 @@ import com.library.bean.Book;
 import com.library.bean.Member;
 import com.library.data.DataStore;
 import com.library.exception.BusinessException;
+import com.library.exception.ExceptionMessages;
 
 /**
  * Service class which has all the methods required by library
@@ -111,8 +112,23 @@ public class LibraryService {
 			return null;
 		}
 		Set<Book> books = dataStore.getBooks(booksTobeIssued);
+		validateBorrowableBooks(books);
 		return books;
 	}
 
+	
+	/**
+	 * Method to validate that books can be borrowed
+	 * 
+	 * @param books - list of books
+	 * @throws BusinessException - Exception with valid message in case of validation failure
+	 */
+	private void validateBorrowableBooks(Set<Book> books) throws BusinessException{
+		for(Book book : books){
+			if(!book.isBorrowable()){
+				throw new BusinessException(ExceptionMessages.REF_BOOK_CAN_NOT_BE_ISSUED);
+			}
+		}
+	}
 	
 }
