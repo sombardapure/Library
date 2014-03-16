@@ -7,6 +7,7 @@ import org.apache.log4j.Logger;
 
 import com.library.bean.Book;
 import com.library.bean.Member;
+import com.library.constants.ApplicationConstants;
 import com.library.data.DataStore;
 import com.library.exception.BusinessException;
 import com.library.exception.ExceptionMessages;
@@ -113,6 +114,10 @@ public class LibraryService {
 		}
 		Set<Book> books = dataStore.getBooks(booksTobeIssued);
 		validateBorrowableBooks(books);
+		
+		Member member = (Member) dataStore.getMember(borrower);
+		checkBookIssueThreshold(member, booksTobeIssued);
+		
 		return books;
 	}
 
@@ -130,5 +135,18 @@ public class LibraryService {
 			}
 		}
 	}
-	
+
+	/**
+	 * Method to validate that member can not borrow more than 3 books
+	 * 
+	 * @param borrower - borrower details
+	 * @param booksTobeIssued - list of books to be issued
+	 * @throws BusinessException  - Exception with valid message in case of validation failure
+	 */
+	private void checkBookIssueThreshold(Member borrower, Set<Book> booksTobeIssued) throws BusinessException {
+		int noOfBooks = borrower.getBorrowedBooks().size() +  booksTobeIssued.size();
+		if(noOfBooks > ApplicationConstants.MAX_NO_OF_BOOKS){
+			throw new BusinessException(ExceptionMessages.MAX_NO_OF_BOOKS);
+		}
+	}
 }
