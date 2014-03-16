@@ -93,5 +93,11 @@ public class LibraryServiceTest {
 		boolean actualResult = libraryService.addMember(member);
 		assertTrue(actualResult);
 	}
+	@Test
+	public void addExistingMember(){
+		Member member = new Member(1L, "TestUser1");
+		boolean actualResult = libraryService.addMember(member);
+		assertFalse(actualResult);
+	}
 	
 }
