@@ -1,5 +1,10 @@
-package com.barclays.library.bean;
+package com.library.bean;
 
+/**
+ * Abstract class of Person. Person can be a member or librarian
+ * @author Somanath
+ *
+ */
 public abstract class Person {
 
 	protected Long id;

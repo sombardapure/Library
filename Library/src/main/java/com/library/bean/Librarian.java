@@ -1,5 +1,10 @@
-package com.barclays.library.bean;
+package com.library.bean;
 
+/**
+ * 
+ * @author Somanath
+ *
+ */
 public class Librarian extends Person {
 	
 	public Librarian(Long id, String name){

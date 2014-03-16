@@ -1,9 +1,16 @@
-package com.barclays.library.bean;
+package com.library.bean;
 
+import java.util.Calendar;
 import java.util.Date;
 
-import com.barclays.library.enums.BookType;
+import com.library.constants.ApplicationConstants;
+import com.library.enums.BookType;
 
+/**
+ * 
+ * @author Somanath
+ *
+ */
 public class Book {
 
 	private Long bookId;
@@ -59,7 +66,19 @@ public class Book {
 	public void setBorrowedOn(Date borrowedOn) {
 		this.borrowedOn = borrowedOn;
 	}
-
+	public boolean isBorrowable(){
+		return bookType.name().equals(BookType.BORROWABLE.name());
+	}
+	public Boolean isOverDue(){
+		if(null != borrowedOn){
+			Calendar cal = Calendar.getInstance();
+			Date currentDate = cal.getTime();
+			Long diff = currentDate.getTime() - borrowedOn.getTime();
+			Long diffDays = diff / (24 * 60 * 60 * 1000);
+			return diffDays > ApplicationConstants.OVERDUE_DAY ? true : false;
+		}
+		return false;
+	}
 	@Override
 	public int hashCode() {
 		final int prime = 31;
