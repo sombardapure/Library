@@ -127,6 +127,24 @@ public class LibraryServiceTest {
 		}catch(BusinessException exception){
 			assertEquals(ExceptionMessages.REF_BOOK_CAN_NOT_BE_ISSUED, exception.getMessage());
 		}
+	}
+	
+	@Test
+	public void issueBooksMoreThanThreshold() {
+		Member borrower = new Member(1L, "");
+		
+		Set<Book> booksTobeIssued = new HashSet<Book>();
+		booksTobeIssued.add(new Book(1L, "Kathy Sierra", "Head First Java", BookType.BORROWABLE));
+		booksTobeIssued.add(new Book(2L, "Joshua Bloch","Effective Java", BookType.BORROWABLE));
+		booksTobeIssued.add(new Book(3L, "Kathy Sierra", "Head First Java", BookType.BORROWABLE));
+		booksTobeIssued.add(new Book(6L, "Joshua Bloch","Effective Java", BookType.BORROWABLE));
+		
+		try{
+			libraryService.issueBooks(borrower, booksTobeIssued);
+			fail();
+		}catch(BusinessException exception){
+			assertEquals(ExceptionMessages.MAX_NO_OF_BOOKS, exception.getMessage());
+		}
 		
 	}
 	
