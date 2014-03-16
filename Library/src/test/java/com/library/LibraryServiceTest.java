@@ -30,8 +30,9 @@ public class LibraryServiceTest {
 	}
 	
 	@Test
-	public void findBooksByAuthor(){
-		libraryService.findBooksByAuthor("");
+	public void findBooksByAuthorAsBlank(){
+		Set<Book> actualResult = libraryService.findBooksByAuthor("");
+		assertEquals(null, actualResult);
 	}
 	
 }
