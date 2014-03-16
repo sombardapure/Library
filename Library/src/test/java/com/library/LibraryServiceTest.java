@@ -193,5 +193,15 @@ public class LibraryServiceTest {
 		Set<Book>  overDueBooks = libraryService.returnBooks(member, booksTobeReturned);
 		assertEquals(1, overDueBooks.size());
 	}
+	@Test
+	public void returnBooksWithNoOverdue(){
+		Member member = new Member(1L, "");
+		
+		Set<Book> booksTobeReturned = new HashSet<Book>();
+		booksTobeReturned.add(new Book(1L, "Kathy Sierra", "Head First Java", BookType.BORROWABLE));
+		booksTobeReturned.add(new Book(2L, "Joshua Bloch","Effective Java", BookType.BORROWABLE));
 	
+		Set<Book>  overDueBooks = libraryService.returnBooks(member, booksTobeReturned);
+		assertEquals(null, overDueBooks);
+	}
 }

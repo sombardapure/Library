@@ -118,7 +118,7 @@ public class LibraryService {
 		validateBorrowableBooks(books);
 
 		Member member = (Member) dataStore.getMember(borrower);
-		checkBookIssueThreshold(member, booksTobeIssued);
+		checkBookIssueThreshold(member, books);
 
 		// Update the Book details like borrowedBy and borrowedOn
 		for (Book book : books) {
@@ -145,7 +145,21 @@ public class LibraryService {
 			logger.debug("Borrower or returned books are null/invalid");
 			return null;
 		}
-		return null;
+		Set<Book> overDueBooks = new HashSet<Book>();
+		for(Book returnBook : returnedBooks){
+			if(returnBook.isOverDue()){ //prepare list of overdue books
+				overDueBooks.add(returnBook);
+			}else{ //else set borrower as null and submit to library
+				Book book = dataStore.getBook(returnBook);
+				book.setBorrowedOn(null);
+				book.setBorrowedBy(null);
+			}
+		}
+		if(overDueBooks.size() == 0){ // there is no due on any of the books, then return null
+			return null;
+		}else{ // else respond with overdue books
+			return overDueBooks;
+		}
 	}
 	
 	/**
