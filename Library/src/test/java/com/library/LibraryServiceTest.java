@@ -50,5 +50,16 @@ public class LibraryServiceTest {
 		assertNotNull(actualResult);
 		assertArrayEquals(actualResult.toArray(), expectedResult.toArray());
 	}
+	@Test
+	public void findBooksByTitleAsNull(){
+		Set<Book> actualResult = libraryService.findBooksByTitle(null);
+		assertEquals(null, actualResult);
+	}
+	
+	@Test
+	public void findBooksByTitleAsBlank(){
+		Set<Book> actualResult = libraryService.findBooksByTitle("");
+		assertEquals(null, actualResult);
+	}
 	
 }
