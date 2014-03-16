@@ -164,5 +164,12 @@ public class LibraryServiceTest {
 		Member borrowerInDB = (Member)dataStore.getMember(borrower);
 		assertEquals(2, borrowerInDB.getBorrowedBooks().size());
 	}
+	@Test
+	public void returnInvalidBooks(){
+		Member member = new Member(1L, "");
+		Set<Book> booksTobeReturned = null;
+		Set<Book> actualResults = libraryService.returnBooks(member, booksTobeReturned);
+		assertEquals(null, actualResults);
+	}
 	
 }
