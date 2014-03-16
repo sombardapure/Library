@@ -1,5 +1,6 @@
 package com.library.service;
 
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -106,18 +107,26 @@ public class LibraryService {
 	 * @return Set<Book> - list of issued books
 	 * @throws BusinessException
 	 */
-	public Set<Book> issueBooks(Member borrower, Set<Book> booksTobeIssued) throws BusinessException{
+	public Set<Book> issueBooks(Member borrower, Set<Book> booksTobeIssued)
+			throws BusinessException {
 		logger.info("Executing issueBooks");
-		if(null == borrower || null == booksTobeIssued){
+		if (null == borrower || null == booksTobeIssued) {
 			logger.debug("Borrower or Books are null/invalid");
 			return null;
 		}
 		Set<Book> books = dataStore.getBooks(booksTobeIssued);
 		validateBorrowableBooks(books);
-		
+
 		Member member = (Member) dataStore.getMember(borrower);
 		checkBookIssueThreshold(member, booksTobeIssued);
-		
+
+		// Update the Book details like borrowedBy and borrowedOn
+		for (Book book : books) {
+			book.setBorrowedBy(borrower);
+			book.setBorrowedOn(new Date());
+			member.getBorrowedBooks().add(book);
+		}
+
 		return books;
 	}
 
