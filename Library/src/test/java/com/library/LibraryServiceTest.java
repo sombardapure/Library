@@ -4,6 +4,7 @@ import static junit.framework.Assert.assertEquals;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -77,6 +78,13 @@ public class LibraryServiceTest {
 		
 		assertNotNull(actualResult);
 		assertArrayEquals(actualResult.toArray(), expectedResult.toArray());
+	}
+	
+	@Test
+	public void addMemberAsNull(){
+		Member member = null;
+		boolean actualResult = libraryService.addMember(member);
+		assertFalse(actualResult);
 	}
 	
 	@Test
