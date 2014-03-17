@@ -8,9 +8,7 @@ import org.apache.log4j.Logger;
 
 import com.library.bean.Book;
 import com.library.bean.Member;
-import com.library.constants.ApplicationConstants;
 import com.library.data.DataStore;
-import com.library.exception.ExceptionMessages;
 import com.library.exception.MaxBorrowExceededException;
 import com.library.exception.RefBookBorrowException;
 import com.library.util.LibraryUtil;
@@ -118,10 +116,10 @@ public class LibraryService {
 			return null;
 		}
 		Set<Book> books = dataStore.getBooks(booksTobeIssued);
-		validateBorrowableBooks(books);
+		LibraryUtil.validateBorrowableBooks(books);
 
 		Member member = (Member) dataStore.getMember(borrower);
-		checkBookIssueThreshold(member, books);
+		LibraryUtil.checkBookIssueThreshold(member, books);
 
 		// Update the Book details like borrowedBy and borrowedOn
 		for (Book book : books) {
@@ -162,34 +160,6 @@ public class LibraryService {
 			return null;
 		}else{ // else respond with overdue books
 			return overDueBooks;
-		}
-	}
-	
-	/**
-	 * Method to validate that books can be borrowed
-	 * 
-	 * @param books - list of books
-	 * @throws RefBookBorrowException - Exception with valid message in case of validation failure
-	 */
-	private void validateBorrowableBooks(Set<Book> books) throws RefBookBorrowException{
-		for(Book book : books){
-			if(!book.isBorrowable()){
-				throw new RefBookBorrowException(ExceptionMessages.REF_BOOK_CAN_NOT_BE_ISSUED);
-			}
-		}
-	}
-
-	/**
-	 * Method to validate that member can not borrow more than 3 books
-	 * 
-	 * @param borrower - borrower details
-	 * @param booksTobeIssued - list of books to be issued
-	 * @throws MaxBorrowExceededException  - Exception with valid message in case of validation failure
-	 */
-	private void checkBookIssueThreshold(Member borrower, Set<Book> booksTobeIssued) throws MaxBorrowExceededException {
-		int noOfBooks = borrower.getBorrowedBooks().size() +  booksTobeIssued.size();
-		if(noOfBooks > ApplicationConstants.MAX_NO_OF_BOOKS){
-			throw new MaxBorrowExceededException(ExceptionMessages.MAX_NO_OF_BOOKS);
 		}
 	}
 }

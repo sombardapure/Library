@@ -5,6 +5,7 @@ import java.util.Date;
 import com.library.enums.BookType;
 
 /**
+ * Class to hold book attributes
  * 
  * @author Somanath
  *
