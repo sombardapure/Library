@@ -5,7 +5,6 @@ import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -19,8 +18,8 @@ import com.library.bean.Book;
 import com.library.bean.Member;
 import com.library.data.DataStore;
 import com.library.enums.BookType;
-import com.library.exception.BusinessException;
-import com.library.exception.ExceptionMessages;
+import com.library.exception.MaxBorrowExceededException;
+import com.library.exception.RefBookBorrowException;
 import com.library.service.LibraryService;
 
 /**
@@ -51,7 +50,7 @@ public class LibraryServiceTest {
 	}
 	
 	@Test
-	public void findBooksByAuthor(){
+	public void whenSerachByExistingAuthorGetListOfBooks(){
 		Set<Book> actualResult = libraryService.findBooksByAuthor("Sierra");
 		
 		Set<Book> expectedResult = new HashSet<Book>();
@@ -59,6 +58,13 @@ public class LibraryServiceTest {
 		expectedResult.add(new Book(6L, "Kathy Sierra", "Head First Java", BookType.BORROWABLE));
 		
 		assertNotNull(actualResult);
+		assertArrayEquals(actualResult.toArray(), expectedResult.toArray());
+	}
+	@Test
+	public void whenSearchByMissingAuthorGetEmptyListOfBooks(){
+		Set<Book> actualResult = libraryService.findBooksByAuthor("Missing Book");
+		
+		Set<Book> expectedResult = new HashSet<Book>();
 		assertArrayEquals(actualResult.toArray(), expectedResult.toArray());
 	}
 	@Test
@@ -74,7 +80,7 @@ public class LibraryServiceTest {
 	}
 	
 	@Test
-	public void findBooksByTitle(){
+	public void whenSerachByExistingTitleGetListOfBooks(){
 		Set<Book> actualResult = libraryService.findBooksByTitle("Java");
 		
 		Set<Book> expectedResult = new HashSet<Book>();
@@ -85,6 +91,13 @@ public class LibraryServiceTest {
 		expectedResult.add(new Book(2L, "Bruce Ecke","Thinking In Java", BookType.BORROWABLE));
 		
 		assertNotNull(actualResult);
+		assertArrayEquals(actualResult.toArray(), expectedResult.toArray());
+	}
+	@Test
+	public void whenSerachByMissingTitleGetEmptyListOfBooks(){
+		Set<Book> actualResult = libraryService.findBooksByTitle("Missing Title");
+		
+		Set<Book> expectedResult = new HashSet<Book>();
 		assertArrayEquals(actualResult.toArray(), expectedResult.toArray());
 	}
 	
@@ -109,15 +122,15 @@ public class LibraryServiceTest {
 	}
 	
 	@Test
-	public void issueBookForInvalidMember() throws BusinessException{
+	public void issueBookForInvalidMember() throws Exception{
 		Member borrower = null;
 		Set<Book> booksTobeIssued = null;
 		Set<Book> actualResults = libraryService.issueBooks(borrower, booksTobeIssued);
 		assertEquals(null, actualResults);
 	}
 	
-	@Test
-	public void issueRefBook(){
+	@Test(expected = RefBookBorrowException.class)
+	public void issueRefBook() throws Exception{
 		Member borrower = new Member(1L, "");
 		
 		Set<Book> booksTobeIssued = new HashSet<Book>();
@@ -125,17 +138,12 @@ public class LibraryServiceTest {
 		booksTobeIssued.add(new Book(4L, "Joshua Bloch","Effective Java", BookType.REFERENCE));
 		booksTobeIssued.add(new Book(2L, "Kathy Sierra", "Head First Java", BookType.BORROWABLE));
 		booksTobeIssued.add(new Book(3L, "Joshua Bloch","Effective Java", BookType.REFERENCE));
-		
-		try{
-			libraryService.issueBooks(borrower, booksTobeIssued);
-			fail();
-		}catch(BusinessException exception){
-			assertEquals(ExceptionMessages.REF_BOOK_CAN_NOT_BE_ISSUED, exception.getMessage());
-		}
+
+		libraryService.issueBooks(borrower, booksTobeIssued);
 	}
 	
-	@Test
-	public void issueBooksMoreThanThreshold() {
+	@Test(expected = MaxBorrowExceededException.class)
+	public void issueBooksMoreThanThreshold()  throws Exception{
 		Member borrower = new Member(1L, "");
 		
 		Set<Book> booksTobeIssued = new HashSet<Book>();
@@ -144,12 +152,8 @@ public class LibraryServiceTest {
 		booksTobeIssued.add(new Book(3L, "Kathy Sierra", "Head First Java", BookType.BORROWABLE));
 		booksTobeIssued.add(new Book(6L, "Joshua Bloch","Effective Java", BookType.BORROWABLE));
 		
-		try{
-			libraryService.issueBooks(borrower, booksTobeIssued);
-			fail();
-		}catch(BusinessException exception){
-			assertEquals(ExceptionMessages.MAX_NO_OF_BOOKS, exception.getMessage());
-		}
+		libraryService.issueBooks(borrower, booksTobeIssued);
+			
 	}
 	
 	@Test

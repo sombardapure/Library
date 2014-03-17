@@ -10,8 +10,10 @@ import com.library.bean.Book;
 import com.library.bean.Member;
 import com.library.constants.ApplicationConstants;
 import com.library.data.DataStore;
-import com.library.exception.BusinessException;
 import com.library.exception.ExceptionMessages;
+import com.library.exception.MaxBorrowExceededException;
+import com.library.exception.RefBookBorrowException;
+import com.library.util.LibraryUtil;
 
 /**
  * Service class which has all the methods required by library
@@ -98,17 +100,18 @@ public class LibraryService {
 		return dataStore.getUserData().add(member);
 	}
 	
+
 	/**
-	 * 
 	 * Method to issue books
 	 * 
 	 * @param borrower - Borrower details
 	 * @param booksTobeIssued - list of books to be issued
 	 * @return Set<Book> - list of issued books
-	 * @throws BusinessException
+	 * @throws MaxBorrowExceededException
+	 * @throws RefBookBorrowException
 	 */
 	public Set<Book> issueBooks(Member borrower, Set<Book> booksTobeIssued)
-			throws BusinessException {
+			throws MaxBorrowExceededException, RefBookBorrowException {
 		logger.info("Executing issueBooks");
 		if (null == borrower || null == booksTobeIssued) {
 			logger.debug("Borrower or Books are null/invalid");
@@ -147,7 +150,7 @@ public class LibraryService {
 		}
 		Set<Book> overDueBooks = new HashSet<Book>();
 		for(Book returnBook : returnedBooks){
-			if(returnBook.isOverDue()){ //prepare list of overdue books
+			if(LibraryUtil.isBookOverdue(returnBook)){ //prepare list of overdue books
 				overDueBooks.add(returnBook);
 			}else{ //else set borrower as null and submit to library
 				Book book = dataStore.getBook(returnBook);
@@ -166,12 +169,12 @@ public class LibraryService {
 	 * Method to validate that books can be borrowed
 	 * 
 	 * @param books - list of books
-	 * @throws BusinessException - Exception with valid message in case of validation failure
+	 * @throws RefBookBorrowException - Exception with valid message in case of validation failure
 	 */
-	private void validateBorrowableBooks(Set<Book> books) throws BusinessException{
+	private void validateBorrowableBooks(Set<Book> books) throws RefBookBorrowException{
 		for(Book book : books){
 			if(!book.isBorrowable()){
-				throw new BusinessException(ExceptionMessages.REF_BOOK_CAN_NOT_BE_ISSUED);
+				throw new RefBookBorrowException(ExceptionMessages.REF_BOOK_CAN_NOT_BE_ISSUED);
 			}
 		}
 	}
@@ -181,12 +184,12 @@ public class LibraryService {
 	 * 
 	 * @param borrower - borrower details
 	 * @param booksTobeIssued - list of books to be issued
-	 * @throws BusinessException  - Exception with valid message in case of validation failure
+	 * @throws MaxBorrowExceededException  - Exception with valid message in case of validation failure
 	 */
-	private void checkBookIssueThreshold(Member borrower, Set<Book> booksTobeIssued) throws BusinessException {
+	private void checkBookIssueThreshold(Member borrower, Set<Book> booksTobeIssued) throws MaxBorrowExceededException {
 		int noOfBooks = borrower.getBorrowedBooks().size() +  booksTobeIssued.size();
 		if(noOfBooks > ApplicationConstants.MAX_NO_OF_BOOKS){
-			throw new BusinessException(ExceptionMessages.MAX_NO_OF_BOOKS);
+			throw new MaxBorrowExceededException(ExceptionMessages.MAX_NO_OF_BOOKS);
 		}
 	}
 }
